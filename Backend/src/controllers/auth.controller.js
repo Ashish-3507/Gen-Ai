@@ -1,6 +1,7 @@
 import {User} from  '../models/User.model.js';
-import AsyncHandler from '../util/AsyncHandler.js';
+import {asyncHandler} from '../util/AsyncHandler.js';
 import {ApiError} from '../util/ErrorHandler.js';
+import ApiResponse from '../util/ResponseHandler.js';
 import ResponseHandler from "../util/ResponseHandler.js";
 
 const generateAccessTokenRefreshToken=async (userid)=>{
@@ -25,11 +26,11 @@ const generateAccessTokenRefreshToken=async (userid)=>{
     }
 }
 
-const RegisterUser = AsyncHandler(async(req,res)=>{
-    const {username, email, password} = req.body;
+const RegisterUser = asyncHandler(async(req,res)=>{
+    const {username, email, password} = req.body; 
 
     if(!email||!password||!username){
-        throw new ApiError(400 , "Invalid or empty input field");
+        throw new api(400 , "Invalid or empty input field");
     }
 
     const userExist = await User.findOne({
@@ -56,7 +57,7 @@ const RegisterUser = AsyncHandler(async(req,res)=>{
     )
 });
 
-const loginUser = AsyncHandler(async(req,res)=>{
+const loginUser = asyncHandler(async(req,res)=>{
     const {username, email, password} = req.body;
 
     if(!email || !password){
@@ -93,13 +94,38 @@ const loginUser = AsyncHandler(async(req,res)=>{
         ( 
             200, 
             {
-                user:user, accessToken, refreshToken,
+                user:user, accessToken
             },
         "login succesfully")
     )
 })
 
+const logoutUser = asyncHandler(async(req,res)=>{
+    const user = await User.findByIdAndUpdate(req.user._id,
+        {
+            $unset:{
+                refreshToken:1,
+            },
+        },
+        {
+            new:true,
+        }
+    );
+
+    const option = {
+        httpOnly:true,
+        secure:true
+    };
+
+    return res.status(200)
+    .clearCookie("accessToken", option)
+    .clearCookie("refreshToken", option)
+    .json(new ApiResponse(200, {},
+        "you have logout Successfully") );
+})
+
 
 export {RegisterUser,
     loginUser,
+    logoutUser,
 }

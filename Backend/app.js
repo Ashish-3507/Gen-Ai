@@ -10,9 +10,11 @@ const app = express();
 
 app.use(express.json({limit:"16kb"}));
 app.use(express.urlencoded({extended:true}));
+app.use(cookieParser());
 
 //import routes
 import authroute from './src/routes/auth.Route.js';
+import cookieParser from 'cookie-parser';
 
 
 
