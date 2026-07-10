@@ -1,0 +1,31 @@
+button {
+  margin-top: 1rem;
+  
+  border: none;
+  padding: 0.95rem;
+  
+  border-radius: 12px;
+  
+  background: linear-gradient(
+    135deg,
+    #4f46e5,
+    #06b6d4
+  );
+  
+  color: white;
+  
+  font-size: 1rem;
+  font-weight: 600;
+  
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(79, 70, 229, 0.35);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
