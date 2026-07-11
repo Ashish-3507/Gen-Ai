@@ -1,20 +1,23 @@
-import {createBrowserRouter} from 'react-router';
+import { createBrowserRouter, Navigate } from 'react-router';
 import Login from './features/auth/pages/Login.jsx';
 import RegisterUser from './features/auth/pages/RegisterUser.jsx';
 
-
-
-
-
 export const router = createBrowserRouter([
-    
     {
-        path: "/login",
-        element:<Login/>
+        path: '/',
+        element: <Navigate to="/login" replace />
     },
     {
-        path:"/Register",
-        element:<RegisterUser/>
+        path: '/login',
+        element: <Login />
     },
-])
+    {
+        path: '/register',
+        element: <RegisterUser />
+    },
+    {
+        path: '*',
+        element: <Navigate to="/login" replace />
+    }
+]);
 
