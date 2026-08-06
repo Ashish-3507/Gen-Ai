@@ -27,7 +27,7 @@ const generateAccessTokenRefreshToken=async (userid)=>{
 }
 
 const RegisterUser = asyncHandler(async(req,res)=>{
-    const {username, email, password} = req.body; 
+    const {username,email, password} = req.body; 
 
     if(!email||!password||!username){
         throw new ApiError(400 , "Invalid or empty input field");
@@ -84,7 +84,8 @@ const loginUser = asyncHandler(async(req,res)=>{
 
     const option={
         httpOnly: true,
-        secure: true,
+        secure: false,
+        sameSite: 'lax',
     }
 
     return res.status(200)
@@ -94,7 +95,7 @@ const loginUser = asyncHandler(async(req,res)=>{
         ( 
             200, 
             {
-                user:user, accessToken
+                user:user , accessToken
             },
         "login succesfully")
     )
@@ -114,7 +115,8 @@ const logoutUser = asyncHandler(async(req,res)=>{
 
     const option = {
         httpOnly:true,
-        secure:true
+        secure:false,
+        samesite: "lax",
     };
 
     return res.status(200)
@@ -136,7 +138,7 @@ const refreshAccessToken = asyncHandler(async(req,res)=>{
     process.env.REFRESH_TOKEN_SECRET
 );
     
-        const user = await User.findById(decodedTOken?._id);
+        const user = await User.findById(decodedTOken?.id);
         if(!user){
             throw new ApiError(401, "invalid refresh token or expoiired!!")
         }
@@ -146,7 +148,7 @@ const refreshAccessToken = asyncHandler(async(req,res)=>{
     
         const option = {
             httpOnly:true,
-            secure:true
+            secure:false
         }
     
         const {accessToken , refreshToken} = await generateAccessTokenRefreshToken(user._id);
@@ -155,16 +157,29 @@ const refreshAccessToken = asyncHandler(async(req,res)=>{
         .cookie("accessToken", accessToken, option)
         .cookie("refreshToken", refreshToken, option)
         .json(
-            new ApiResponse(200, {accessToken} , "Token generated successfully")
+            new ResponseHandler(200, {accessToken} , "Token generated successfully")
         )
     } catch (error) {
         throw new ApiError(400, error?.message || "invalid token!!!!")
     }
 })
 
+const getMe = asyncHandler(async (req, res) => {
+    return res.status(200).json(
+        new ResponseHandler(
+            200,
+            {
+                user: req.user
+            },
+            "User fetched successfully"
+        )
+    );
+});
+
 
 export {RegisterUser,
     loginUser,
     logoutUser,
     refreshAccessToken,
+    getMe,
 }

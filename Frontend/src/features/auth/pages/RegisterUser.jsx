@@ -1,13 +1,30 @@
-import React from "react";
-import '../style/register.scss'
-import {Link} from 'react-router'
+import React, { useState } from "react";
+import '../style/register.scss';
+import { Link } from 'react-router';
+import { useAuth } from '../hooks/useAuth';
 
-const RegisterUser = ()=>{
+const RegisterUser = () => {
+    const { loading, handleRegister } = useAuth();
+    const [form, setForm] = useState({ username: '', email: '', password: '' });
+    const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
 
-    const handleSubmit = (e)=>{
-        e.preventDefault()
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError('');
+        setSuccess('');
+        try {
+            await handleRegister(form);
+            setSuccess('Registered successfully');
+        } catch (err) {
+            setError(err?.response?.data?.message || err?.message || 'Registration failed');
+        }
+    };
+
+    if (loading) {
+        return <main><h1>Loading.....</h1></main>;
     }
-    
+
     return(
         <main>
             <div className="form-container">
@@ -18,15 +35,38 @@ const RegisterUser = ()=>{
 
                     <div className="input-group">
                         <label htmlFor="username">Username</label>
-                        <input type="text" id="username" name="username" placeholder="Enter your UserName" ></input>
+                        <input
+                            value={form.username}
+                            onChange={(e) => setForm({ ...form, username: e.target.value })}
+                            type="text"
+                            id="username"
+                            name="username"
+                            placeholder="Enter your UserName"
+                        />
 
                         <label htmlFor="email">Email</label>
-                        <input type="email" id="email" name="email" placeholder="Enter your Email" ></input>
+                        <input
+                            value={form.email}
+                            onChange={(e) => setForm({ ...form, email: e.target.value })}
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="Enter your Email"
+                        />
 
                         <label htmlFor="password">Password</label>
-                        <input type="password" name="password" placeholder="Enter your Password" id="password"></input>
+                        <input
+                            value={form.password}
+                            onChange={(e) => setForm({ ...form, password: e.target.value })}
+                            type="password"
+                            name="password"
+                            placeholder="Enter your Password"
+                            id="password"
+                        />
 
-                        <button>Register</button>
+                        <button type="submit">Register</button>
+                        {error ? <p style={{ color: 'red', marginTop: '0.75rem' }}>{error}</p> : null}
+                        {success ? <p style={{ color: 'green', marginTop: '0.75rem' }}>{success}</p> : null}
 
                         <p className="login-link">Already registered? <Link to="/login">Login</Link></p>
 

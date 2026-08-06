@@ -12,7 +12,7 @@ const verifyToken = asyncHandler(async(req,res,next)=>{
         console.log("Authorization:", req.header("Authorization"));
         console.log("Token:", token);
         if(!token){
-            throw new ApiError(400, "Unathorized reqest")
+            throw new ApiError(401, "Unathorized reqest")
         }
     
         const decodeToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
