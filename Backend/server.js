@@ -1,6 +1,10 @@
+import dotenv from 'dotenv'
+dotenv.config({path:"./.env"})
 import app from './app.js';
 import express from 'express';
 import connection from './src/config/connection.js';
+
+
 
 connection().then(()=>{
     const server = app.listen(process.env.PORT, ()=>{
@@ -12,7 +16,4 @@ connection().then(()=>{
 })
 .catch((error)=>{
     console.log(`something went wrong wile connection the the mongoose database: ${error}`);
-})
-
-
-
+});

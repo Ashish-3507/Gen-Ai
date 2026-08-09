@@ -1,5 +1,4 @@
-import dotenv from 'dotenv'
-dotenv.config({path:"./.env"})
+
 import express, { json } from 'express';
 import cors from 'cors';
 
@@ -10,8 +9,6 @@ app.use(express.json({limit:"16kb"}));
 app.use(express.urlencoded({extended:true}));
 app.use(cookieParser());
 
-console.log("CORS middleware loaded");
-
 app.use(cors({
     origin: "http://localhost:5173",
     credentials: true
@@ -19,12 +16,14 @@ app.use(cors({
 
 //import routes
 import authroute from './src/routes/auth.Route.js';
+import interviewRouter from './src/routes/interview.Route.js';
 import cookieParser from 'cookie-parser';
 
 
 
 //routes
 app.use("/api/auth" ,authroute);
+app.use("/api/report", interviewRouter);
 
 
 

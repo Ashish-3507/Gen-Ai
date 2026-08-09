@@ -50,8 +50,7 @@ I consider myself a quick learner, hardworking, and passionate about software en
 `;
 
 
-const jobDescription = `
-Software Engineer Intern (MERN Stack)
+const jobDescription = `Software Engineer Intern (MERN Stack)
 
 Responsibilities:
 - Develop and maintain web applications using React.js, Node.js, Express.js, and MongoDB.
@@ -77,3 +76,5 @@ Preferred Qualifications:
 - Understanding of cloud deployment platforms like AWS or Render.
 - Experience integrating AI APIs such as OpenAI or Gemini.
 `;
+
+export default {resume, selfDescription, jobDescription};
