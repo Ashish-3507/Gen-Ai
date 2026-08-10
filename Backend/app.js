@@ -23,7 +23,7 @@ import cookieParser from 'cookie-parser';
 
 //routes
 app.use("/api/auth" ,authroute);
-app.use("/api/report", interviewRouter);
+app.use("/api/interview", interviewRouter);
 
 
 
