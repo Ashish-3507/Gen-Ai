@@ -3,7 +3,6 @@ import { ApiError } from "../util/ErrorHandler.js";
 import ResponseHandler from "../util/ResponseHandler.js";
 import generateInterviewReport from "../services/ai.service.js";
 import InterviewReport from "../models/interview-report.model.js";
-import { PDFParse } from "pdf-parse";
 
 
 const generateInterviewReportController = asyncHandler(async (req, res) => {
