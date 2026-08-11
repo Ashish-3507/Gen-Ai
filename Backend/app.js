@@ -20,6 +20,13 @@ import interviewRouter from './src/routes/interview.Route.js';
 import cookieParser from 'cookie-parser';
 
 
+app.get("/", (req, res) => {
+    res.status(200).json({
+        success: true,
+        message: "GEN-AI Backend is running",
+    });
+});
+
 
 //routes
 app.use("/api/auth" ,authroute);
