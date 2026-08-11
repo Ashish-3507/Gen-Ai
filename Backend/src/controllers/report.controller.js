@@ -2,7 +2,7 @@ import { asyncHandler } from "../util/AsyncHandler.js";
 import { ApiError } from "../util/ErrorHandler.js";
 import ResponseHandler from "../util/ResponseHandler.js";
 import generateInterviewReport from "../services/ai.service.js";
-import InterviewReport from "../models/InterviewReport.model.js";
+import InterviewReport from "../models/interviewReport.model.js";
 import { PDFParse } from "pdf-parse";
 
 
