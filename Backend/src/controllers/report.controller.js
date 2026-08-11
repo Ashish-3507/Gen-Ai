@@ -8,6 +8,7 @@ import { PDFParse } from "pdf-parse";
 
 const generateInterviewReportController = asyncHandler(async (req, res) => {
 
+    const { PDFParse } = await import("pdf-parse");
     // Check if resume was uploaded
     if (!req.file) {
         throw new ApiError(400, "Resume file is required");
