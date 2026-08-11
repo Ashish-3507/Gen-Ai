@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-
+import express from "express";
 dotenv.config();
 
 import app from "./expressApp.js";
