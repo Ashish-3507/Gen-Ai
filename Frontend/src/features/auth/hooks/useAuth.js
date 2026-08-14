@@ -27,15 +27,15 @@ export const useAuth = () => {
         }
     };
 
-    const handleLogout = async () => {
-        setLoading(true);
-        try {
-            await logoutUser();
-            setUser(null);
-        } finally {
-            setLoading(false);
-        }
-    };
+    // const handleLogout = async () => {
+    //     setLoading(true);
+    //     try {
+    //         await logoutUser();
+    //         setUser(null);
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
 
-    return { user, loading, handleRegister, handleLogin, handleLogout };
+    return { user, loading, handleRegister, handleLogin, };
 };
