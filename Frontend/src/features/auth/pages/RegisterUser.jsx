@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import '../style/register.scss';
 import { Link } from 'react-router';
 import { useAuth } from '../hooks/useAuth';
+import { useNavigate } from "react-router-dom";
 
 const RegisterUser = () => {
     const { loading, handleRegister } = useAuth();
     const [form, setForm] = useState({ username: '', email: '', password: '' });
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -15,7 +17,8 @@ const RegisterUser = () => {
         setSuccess('');
         try {
             await handleRegister(form);
-            setSuccess('Registered successfully');
+            alert('Registered successfully');
+            navigate("/Home", { replace: true });
         } catch (err) {
             setError(err?.response?.data?.message || err?.message || 'Registration failed');
         }
