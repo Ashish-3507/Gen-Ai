@@ -7,7 +7,7 @@ const router = express.Router();
 
 
 
-router.route("/RegisterUser").post(RegisterUser);
+router.route("/register").post(RegisterUser);
 
 router.route("/loginUser").post(loginUser);
 
