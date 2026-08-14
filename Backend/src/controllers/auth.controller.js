@@ -126,44 +126,56 @@ const logoutUser = asyncHandler(async(req,res)=>{
         "you have logout Successfully") );
 })
 
-const refreshAccessToken = asyncHandler(async(req,res)=>{
-    const incomingRefreshToken = req.cookies?.refreshToken||req.body?.refreshToken;
-    if(!incomingRefreshToken){
-        throw new ApiError(401, "Unauthorized access");
+const refreshAccessToken = asyncHandler(async (req, res) => {
+    const incomingRefreshToken =
+        req.cookies?.refreshToken || req.body?.refreshToken;
+
+    if (!incomingRefreshToken) {
+        throw new ApiError(401, "Refresh token is required");
     }
 
+    let decodedToken;
+
     try {
-        const decodedTOken = jwt.verify(
-    incomingRefreshToken,
-    process.env.REFRESH_TOKEN_SECRET
-);
-    
-        const user = await User.findById(decodedTOken?.id);
-        if(!user){
-            throw new ApiError(401, "invalid refresh token or expoiired!!")
-        }
-        if(incomingRefreshToken != user?.refreshToken){
-            throw new ApiError(401, "invalid refresh token or expired!!");
-        }
-    
-        const option = {
-            httpOnly:true,
-            secure:true,
-            sameSite:"none",
-        }
-    
-        const {accessToken , refreshToken} = await generateAccessTokenRefreshToken(user._id);
-    
-        return res.status(200)
+        decodedToken = jwt.verify(
+            incomingRefreshToken,
+            process.env.REFRESH_TOKEN_SECRET
+        );
+    } catch (error) {
+        throw new ApiError(401, "Invalid or expired refresh token");
+    }
+
+    const user = await User.findById(decodedToken?.id);
+
+    if (!user) {
+        throw new ApiError(401, "Invalid refresh token");
+    }
+
+    if (incomingRefreshToken !== user.refreshToken) {
+        throw new ApiError(401, "Refresh token does not match");
+    }
+
+    const { accessToken, refreshToken } =
+        await generateAccessTokenRefreshToken(user._id);
+
+    const option = {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+    };
+
+    return res
+        .status(200)
         .cookie("accessToken", accessToken, option)
         .cookie("refreshToken", refreshToken, option)
         .json(
-            new ResponseHandler(200, {accessToken} , "Token generated successfully")
-        )
-    } catch (error) {
-        throw new ApiError(400, error?.message || "invalid token!!!!")
-    }
-})
+            new ResponseHandler(
+                200,
+                { accessToken },
+                "Token generated successfully"
+            )
+        );
+});
 
 const getMe = asyncHandler(async (req, res) => {
     return res.status(200).json(
