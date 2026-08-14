@@ -1,10 +1,20 @@
 /* =========================================================
-   REPORT PAGE
+REPORT PAGE
+
+REDESIGNED LAYOUT MODEL:
+Instead of locking the whole page to exactly 100vh and
+relying on precise height math for an internal scroll pane
+(fragile — breaks at odd viewport heights, browser zoom,
+DevTools docking, etc), the page now flows naturally and
+the BROWSER handles scrolling. Nav and sidebar use
+position: sticky so they still feel anchored while you
+scroll. Nothing can ever get permanently clipped again,
+because there's no overflow:hidden trapping content.
 ========================================================= */
 
 .interview-page {
+    width: 100%;
     min-height: 100vh;
-    height: 100vh;
 
     background:
         radial-gradient(
@@ -28,17 +38,15 @@
         BlinkMacSystemFont,
         "Segoe UI",
         sans-serif;
-
-    overflow: hidden;
 }
 
 
 /* =========================================================
-   HEADER
+HEADER
 ========================================================= */
 
 .report-header {
-    height: clamp(120px, 16vh, 155px);
+    padding: clamp(24px, 4vh, 36px) 0;
 
     border-bottom: 1px solid rgba(148, 163, 184, 0.12);
 
@@ -48,11 +56,6 @@
             rgba(15, 30, 50, 0.95),
             rgba(7, 14, 27, 0.98)
         );
-
-    display: flex;
-    align-items: center;
-
-    flex-shrink: 0;
 }
 
 
@@ -65,7 +68,9 @@
     align-items: center;
     justify-content: space-between;
 
-    gap: 40px;
+    flex-wrap: wrap;
+
+    gap: 24px 40px;
 }
 
 
@@ -156,18 +161,19 @@
 
 
 /* =========================================================
-   MAIN DASHBOARD
+MAIN DASHBOARD
+
+Simple grid. No fixed height, no overflow:hidden — the
+browser's own scrollbar is the only scroll mechanism now,
+which is what actually behaves correctly at every size.
 ========================================================= */
 
 .interview-layout {
     width: min(1500px, calc(100% - 64px));
 
-    height: calc(100vh - clamp(120px, 16vh, 155px));
-    min-height: 0;
-
     margin: 0 auto;
 
-    padding: 24px 0;
+    padding: 24px 0 60px;
 
     display: grid;
 
@@ -176,22 +182,22 @@
         minmax(0, 1fr)
         320px;
 
-    gap: 20px;
+    align-items: start;
 
-    /*
-     * This row is the fixed dashboard frame.
-     * Only the center content should scroll on desktop.
-     */
-    overflow: hidden;
+    gap: 20px;
 }
 
 
 /* =========================================================
    LEFT NAVIGATION
+
+   Sticky so it stays in view while you scroll the page,
+   without needing any fixed-height container math.
 ========================================================= */
 
 .interview-nav {
-    min-height: 0;
+    position: sticky;
+    top: 24px;
 
     background:
         linear-gradient(
@@ -209,9 +215,15 @@
     display: flex;
     flex-direction: column;
 
-    justify-content: space-between;
+    gap: 22px;
 
-    overflow: hidden;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+
+    scrollbar-width: thin;
+    scrollbar-color:
+        rgba(71, 85, 105, 0.8)
+        transparent;
 }
 
 
@@ -348,52 +360,17 @@
 
 /* =========================================================
    CENTER CONTENT
+
+   No forced height, no internal overflow — it just grows
+   naturally with its content and the page scrolls.
 ========================================================= */
 
 .interview-content {
     min-width: 0;
-    min-height: 0;
 
     width: 100%;
-    height: 100%;
-    max-height: 100%;
 
-    box-sizing: border-box;
-
-    padding: 28px 10px 40px;
-
-    overflow-y: auto;
-    overflow-x: hidden;
-
-    /*
-     * Prevent browser scroll anchoring from keeping the
-     * previous section's scroll position.
-     */
-    overflow-anchor: none;
-
-    scroll-padding-top: 28px;
-
-    scrollbar-width: thin;
-    scrollbar-color:
-        rgba(71, 85, 105, 0.8)
-        transparent;
-}
-
-.interview-content::-webkit-scrollbar {
-    width: 7px;
-}
-
-.interview-content::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.interview-content::-webkit-scrollbar-thumb {
-    background: #26364f;
-    border-radius: 999px;
-}
-
-.interview-content::-webkit-scrollbar-thumb:hover {
-    background: #3b4f6d;
+    padding: 0 10px;
 }
 
 
@@ -676,13 +653,14 @@
 
 /* =========================================================
    RIGHT SIDEBAR
+
+   Sticky, same as nav — stays in view while the center
+   content scrolls, no fixed-height container needed.
 ========================================================= */
 
 .interview-sidebar {
-    min-height: 0;
-
-    height: fit-content;
-    max-height: 100%;
+    position: sticky;
+    top: 24px;
 
     padding: 26px;
 
@@ -698,6 +676,7 @@
             rgba(9, 19, 33, 0.96)
         );
 
+    max-height: calc(100vh - 48px);
     overflow-y: auto;
 
     scrollbar-width: thin;
@@ -707,12 +686,14 @@
 }
 
 
-.interview-sidebar::-webkit-scrollbar {
+.interview-sidebar::-webkit-scrollbar,
+.interview-nav::-webkit-scrollbar {
     width: 5px;
 }
 
 
-.interview-sidebar::-webkit-scrollbar-thumb {
+.interview-sidebar::-webkit-scrollbar-thumb,
+.interview-nav::-webkit-scrollbar-thumb {
     background: #26364f;
 
     border-radius: 999px;
@@ -1187,12 +1168,7 @@
 
     margin: 0;
 
-    /*
-     * The first card starts inside the visible scroll area.
-     * The extra bottom space prevents the final card from
-     * being cut against the bottom edge.
-     */
-    padding: 8px 8px 50px 70px;
+    padding: 8px 8px 8px 70px;
 
     box-sizing: border-box;
 }
@@ -1207,7 +1183,7 @@
 
     left: 25px;
     top: 30px;
-    bottom: 55px;
+    bottom: 30px;
 
     width: 1px;
 
@@ -1251,9 +1227,6 @@
     box-shadow:
         0 8px 24px rgba(0, 0, 0, 0.12);
 
-    /*
-     * Prevent flexbox from shrinking roadmap cards.
-     */
     flex: 0 0 auto;
 }
 
@@ -1290,9 +1263,6 @@
 
     z-index: 3;
 
-    /*
-     * Keeps the number cleanly above the timeline.
-     */
     box-shadow:
         0 0 0 5px #070d18;
 }
@@ -1381,7 +1351,7 @@
         padding:
             8px
             8px
-            40px
+            8px
             60px;
     }
 
@@ -1398,7 +1368,7 @@
 @media (max-width: 600px) {
 
     .roadmap-list {
-        padding: 0 0 35px;
+        padding: 0;
     }
 
     .roadmap-list::before {
@@ -1525,22 +1495,15 @@
 
 /* =========================================================
    TABLET
+
+   Below this width, nav and sidebar drop out of sticky
+   mode and stack normally with the page — matches how
+   they already behaved before, just simplified.
 ========================================================= */
 
 @media (max-width: 950px) {
 
-    .interview-page {
-        height: auto;
-
-        min-height: 100vh;
-
-        overflow: visible;
-    }
-
-
     .report-header {
-        height: auto;
-
         padding: 30px 0;
     }
 
@@ -1570,20 +1533,18 @@
             700px
         );
 
-        height: auto;
-
         padding: 18px 0 30px;
 
-        display: grid;
-
-        grid-template-columns: 1fr;
-
-        overflow: visible;
+        display: flex;
+        flex-direction: column;
     }
 
 
     .interview-nav {
-        min-height: auto;
+        position: static;
+
+        max-height: none;
+        overflow: visible;
 
         flex-direction: row;
 
@@ -1592,6 +1553,8 @@
         gap: 14px;
 
         padding: 12px;
+
+        order: 1;
     }
 
 
@@ -1630,20 +1593,19 @@
 
 
     .interview-content {
-        height: auto;
-
-        overflow: visible;
-
         padding: 0;
+
+        order: 2;
     }
 
 
     .interview-sidebar {
+        position: static;
+
         max-height: none;
-
-        height: auto;
-
         overflow: visible;
+
+        order: 3;
     }
 
 }
@@ -1793,7 +1755,7 @@
 
 
 /* =========================================================
-   VERY SMALL SCREENS
+VERY SMALL SCREENS
 ========================================================= */
 
 @media (max-width: 400px) {

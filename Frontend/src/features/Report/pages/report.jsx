@@ -2,7 +2,6 @@ import React, {
     useContext,
     useState,
     useEffect,
-    useRef,
 } from "react";
 
 import "../style/report.style.scss";
@@ -584,9 +583,6 @@ const Interview = () => {
 
     const [activeNav, setActiveNav] = useState("overview");
 
-    // Used to reset the internal content scroll
-    // whenever the user changes sections.
-    const contentRef = useRef(null);
 
     const {
         report,
@@ -613,20 +609,6 @@ const Interview = () => {
         }
 
     }, [interviewId]);
-
-
-    // ========================================================
-    // RESET INTERNAL SCROLL WHEN CHANGING SECTION
-    // ========================================================
-
-    useEffect(() => {
-
-        if (contentRef.current) {
-            contentRef.current.scrollTop = 0;
-        }
-
-    }, [activeNav]);
-
 
     // ========================================================
     // LOADING
@@ -746,14 +728,14 @@ const Interview = () => {
                     </div>
 
 
-                    <button
+                    {/* <button
                         onClick={() =>
                             getResumePdf(interviewId)
                         }
                         className="button primary-button"
                     >
                         ↓ Download Resume
-                    </button>
+                    </button> */}
 
                 </nav>
 
@@ -767,7 +749,6 @@ const Interview = () => {
                 ================================================= */}
 
                 <main
-                    ref={contentRef}
                     className="interview-content"
                 >
 
